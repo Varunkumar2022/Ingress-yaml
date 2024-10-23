@@ -1,98 +1,24 @@
-#https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.1/deploy/static/provider/cloud/deploy.yaml [To configure ingress on Kubernetes]
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: k8s-ingress
+  name: frontend-ingress
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    kubernetes.io/ingress.global-static-ip-name: online-boutique-ip
+    networking.gke.io/managed-certificates: online-boutique-certificate
+    networking.gke.io/v1beta1.FrontendConfig: frontend-frontend-config
 spec:
-  ingressClassName: nginx
+  defaultBackend:
+    service:
+      name: frontend
+      port:
+        number: 80
   rules:
   - http:
       paths:
-      - path: /adservice(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: adservice
-            port:
-              number: 80
-      - path: /cartservice(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: cartservice
-            port:
-              number: 80
-      - path: /checkoutservice(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: checkoutservice
-            port:
-              number: 80
-      - path: /currencyservice(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: currencyservice
-            port:
-              number: 80
-      - path: /emailservice(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: emailservice
-            port:
-              number: 80
-      - path: /frontend(/|$)(.*)
-        pathType: Prefix
+      - path: /*
+        pathType: ImplementationSpecific
         backend:
           service:
             name: frontend
-            port:
-              number: 80
-      - path: /paymentservice(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: paymentservice
-            port:
-              number: 80
-      - path: /productcatalogservice(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: productcatalogservice
-            port:
-              number: 80
-      - path: /recommendationservice(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: recommendationservice
-            port:
-              number: 80
-      - path: /redis-cart(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: redis-cart
-            port:
-              number: 80
-      - path: /shippingservice(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: shippingservice
-            port:
-              number: 80
-      - path: /(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: nginx
             port:
               number: 80
